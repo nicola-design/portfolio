@@ -3,8 +3,8 @@ import Image from 'next/image';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Portfolio Personale - Nicola's Nook",
-  description: "Dettagli sul progetto Portfolio Personale di Nicola, che mostra come è stato sviluppato il sito nicolasnook.com.",
+  title: "Portfolio Personale",
+  description: "Dettagli sul progetto Portfolio Personale di Nicola",
 };
 
 export default function PortfolioDetailPage() {
@@ -15,7 +15,7 @@ export default function PortfolioDetailPage() {
           <h1 className="text-4xl font-bold text-primary md:text-5xl lg:text-6xl tracking-tight">
             Portfolio Personale
           </h1>
-          <p className="mt-3 text-lg text-muted-foreground">Un'immersione nella creazione di Nicola's Nook.</p>
+          <p className="mt-3 text-lg text-muted-foreground">Un'immersione nella creazione di Nicola's Portfolio.</p>
         </header>
 
         <div className="mb-12 overflow-hidden rounded-lg shadow-xl border border-border/20">
@@ -36,7 +36,7 @@ export default function PortfolioDetailPage() {
           </h2>
           <div className="space-y-6 text-lg leading-relaxed">
             <p>
-              Questo sito, "Nicola's Nook", rappresenta il mio portfolio personale digitale. È un progetto che ho concepito e sviluppato con grande entusiasmo e dedizione, con l'obiettivo primario di presentare in modo efficace le mie competenze, i miei progetti e la mia passione per il mondo della programmazione e del design digitale.
+              Questo sito, "Nicola's Portfolio", rappresenta il mio portfolio personale digitale. È un progetto che ho concepito e sviluppato con grande entusiasmo e dedizione, con l'obiettivo primario di presentare in modo efficace le mie competenze, i miei progetti e la mia passione per il mondo della programmazione e del design digitale.
             </p>
             <p>
               L'idea era quella di creare non solo una vetrina, ma un vero e proprio spazio personale che riflettesse la mia identità di giovane sviluppatore in crescita.
@@ -44,7 +44,7 @@ export default function PortfolioDetailPage() {
             
             <h3 className="text-2xl font-semibold text-primary/90 pt-4">Stack Tecnologico</h3>
             <p>
-              Per la realizzazione di "Nicola's Nook", ho scelto di utilizzare un insieme di tecnologie moderne, performanti e ampiamente riconosciute nel settore dello sviluppo web:
+              Per la realizzazione di "Nicola's Portfolio", ho scelto di utilizzare un insieme di tecnologie moderne, performanti e ampiamente riconosciute nel settore dello sviluppo web:
             </p>
             <ul className="list-disc pl-6 space-y-3">
               <li>
