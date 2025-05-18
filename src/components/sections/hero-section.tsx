@@ -16,9 +16,9 @@ export default function HeroSection() {
           <Image
             src="/nicola-selfie.png"
             alt="Nicola - Immagine Profilo"
-            width={150}
-            height={150}
-            className="rounded-full mx-auto mb-8 shadow-lg border-4 border-primary w-[150px] h-[150px] object-cover object-[center_30%]"
+            width={200}
+            height={200}
+            className="rounded-full mx-auto mb-8 shadow-lg border-4 border-primary w-[200px] h-[200px] object-cover object-[center_30%]"
             style={{ objectFit: 'cover' }}
             priority
             data-interactive="true"

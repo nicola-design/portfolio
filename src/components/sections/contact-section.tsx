@@ -1,10 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Github, Mail, Linkedin } from 'lucide-react'; 
+import { Github, Mail } from 'lucide-react'; // cambiato da Linkedin a Discord
+import { FaDiscord } from 'react-icons/fa';
 
 const socialLinks = [
-  { icon: <Github size={32} />, label: "GitHub", href: "https://github.com" }, 
-  { icon: <Mail size={32} />, label: "Email", href: "mailto:nicola@example.com" }, 
-  { icon: <Linkedin size={32} />, label: "LinkedIn", href: "https://linkedin.com" }, 
+  { icon: <Github size={32} />, label: "GitHub", href: "https://github.com/nicola-design" }, 
+  { icon: <Mail size={32} />, label: "Email", href: "mailto:nicola.designn@gmail.com" }, 
+  { icon: <FaDiscord size={32} />, label: "Discord", href: "https://discord.com/users/1368556935401705604" }, 
 ];
 
 export default function ContactSection() {
@@ -36,7 +37,7 @@ export default function ContactSection() {
           ))}
         </div>
         <Button size="lg" asChild data-interactive>
-          <a href="mailto:nicola@example.com">Scrivimi una Email</a>
+          <a href="mailto:nicola.designn@gmail.com">Scrivimi una Email</a>
         </Button>
       </div>
     </section>

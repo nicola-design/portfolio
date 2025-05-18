@@ -22,31 +22,16 @@ export default function Navbar() {
   const observer = useRef<IntersectionObserver | null>(null);
   const sectionRefs = useRef<Map<string, HTMLElement | null>>(new Map());
 
-  const handleNavLinkClick = useCallback((href: string) => {
-    setActiveHash(href);
-    setIsMobileMenuOpen(false);
-    const element = document.getElementById(href.substring(1));
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-      
-      if (observer.current) {
-        observer.current.disconnect();
-      }
-      setTimeout(() => {
-        observeSections(); 
-      }, 1000); 
-    }
-  }, []);
-
-  const handleLogoClick = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    handleNavLinkClick('#home');
-  }, [handleNavLinkClick]);
-
   const observeSections = useCallback(() => {
+    if (pathname !== '/') {
+      if (observer.current) observer.current.disconnect();
+      return;
+    }
+
     if (observer.current) {
       observer.current.disconnect();
     }
+
     observer.current = new IntersectionObserver(
       (entries) => {
         let currentBestMatch: IntersectionObserverEntry | null = null;
@@ -59,9 +44,7 @@ export default function Navbar() {
         });
         if (currentBestMatch) {
           const newHash = `#${currentBestMatch.target.id}`;
-          if (activeHash !== newHash) {
-             setActiveHash(newHash);
-          }
+          setActiveHash(newHash);
         } else if (window.scrollY < 200 && pathname ==='/') { 
             setActiveHash('#home');
         }
@@ -77,45 +60,85 @@ export default function Navbar() {
         observer.current.observe(element);
       }
     });
-  }, [activeHash, pathname]);
+  }, [pathname]);
+
+  const handleNavLinkClick = useCallback((hrefTarget: string) => {
+    // Questa funzione è chiamata solo se pathname === '/'
+    setActiveHash(hrefTarget);
+    setIsMobileMenuOpen(false);
+    const element = document.getElementById(hrefTarget.substring(1));
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+      setTimeout(() => {
+        if (pathname === '/') observeSections();
+      }, 1000); 
+    }
+  }, [pathname, observeSections]);
 
   useEffect(() => {
-    const currentHash = window.location.hash;
-    if (currentHash) {
-      setActiveHash(currentHash);
-    } else if (pathname === '/') {
-      setActiveHash('#home');
+    if (pathname === '/') {
+      const currentUrlHash = window.location.hash;
+      if (currentUrlHash) {
+        setActiveHash(currentUrlHash);
+        // Scroll all'elemento se si arriva con un hash
+        setTimeout(() => {
+          const element = document.getElementById(currentUrlHash.substring(1));
+          if (element) {
+            element.scrollIntoView({ behavior: 'auto' }); // 'auto' per evitare conflitti iniziali
+          }
+        }, 50);
+      } else if (window.scrollY < 200) {
+        setActiveHash('#home');
+      }
+      observeSections();
+    } else {
+      setActiveHash(''); // Nessuna sezione attiva se non siamo sulla homepage
+      if (observer.current) {
+        observer.current.disconnect();
+      }
     }
 
-    observeSections();
-
-    const handleScroll = () => {
-        if (window.scrollY < 100 && pathname === '/' && !window.location.hash) {
-            setActiveHash('#home');
-        }
+    const handleHashChangeOnHomepage = () => {
+      if (pathname === '/') {
+        setActiveHash(window.location.hash || '#home');
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('hashchange', () => {
-        setActiveHash(window.location.hash || (pathname === '/' ? '#home' : ''));
-    });
-
+    window.addEventListener('hashchange', handleHashChangeOnHomepage);
 
     return () => {
       if (observer.current) {
         observer.current.disconnect();
       }
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('hashchange', () => {
-        setActiveHash(window.location.hash || (pathname === '/' ? '#home' : ''));
-      });
+      window.removeEventListener('hashchange', handleHashChangeOnHomepage);
     };
   }, [pathname, observeSections]);
+
+
+  const getDynamicHref = (targetHash: string) => {
+    return pathname === '/' ? targetHash : `/${targetHash}`;
+  };
 
   return (
     <header className="sticky top-0 z-50 mt-4 mx-24 rounded-full border border-border/40 bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/50">
       <div className="container mx-auto flex h-16 max-w-screen-2xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="#home" onClick={handleLogoClick} className="flex items-center space-x-2 hover:opacity-75 transition-opacity duration-200" data-interactive>
+        <Link 
+          href={getDynamicHref('#home')} 
+          onClick={(e) => {
+            if (pathname === '/') {
+              e.preventDefault();
+              handleNavLinkClick('#home');
+            } else {
+              setIsMobileMenuOpen(false);
+            }
+          }}
+          className="flex items-center space-x-2 hover:opacity-75 transition-all duration-300 hover:scale-105" 
+          data-interactive
+        >
           <Code2 className="h-6 w-6 text-primary" />
           <span className="font-bold text-lg text-foreground">Nicola's Portfolio</span>
         </Link>
@@ -123,15 +146,19 @@ export default function Navbar() {
         <div className="hidden md:flex items-center space-x-6">
           <nav className="flex items-center space-x-5">
             {mainNavItems.map((item) => (
-              <a
+              <Link
                 key={item.label}
-                href={item.href}
+                href={getDynamicHref(item.href)}
                 onClick={(e) => {
-                  e.preventDefault();
-                  handleNavLinkClick(item.href);
+                  if (pathname === '/') {
+                    e.preventDefault();
+                    handleNavLinkClick(item.href);
+                  } else {
+                    setIsMobileMenuOpen(false);
+                  }
                 }}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
+                  "text-sm font-medium transition-all duration-200 hover:text-primary hover:-translate-y-0.5",
                   activeHash === item.href
                     ? "text-primary"
                     : "text-foreground/70"
@@ -139,12 +166,24 @@ export default function Navbar() {
                 data-interactive
               >
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
           
           <Button asChild className="px-4 py-2 rounded-md text-sm font-medium" data-interactive>
-            <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavLinkClick('#contact'); }}>Contattami</a>
+            <Link 
+              href={getDynamicHref('#contact')}
+              onClick={(e) => {
+                if (pathname === '/') {
+                  e.preventDefault();
+                  handleNavLinkClick('#contact');
+                } else {
+                  setIsMobileMenuOpen(false);
+                }
+              }}
+            >
+              Contattami
+            </Link>
           </Button>
         </div>
         
@@ -159,20 +198,36 @@ export default function Navbar() {
             <SheetContent side="right" className="w-[280px] sm:w-[320px] bg-background">
               <SheetHeader className="mb-6">
                 <SheetTitle>
-                  <a href="#home" onClick={(e) => { e.preventDefault(); handleLogoClick(e); }} className="flex items-center space-x-2" data-interactive>
+                  <Link 
+                    href={getDynamicHref('#home')} 
+                    onClick={(e) => {
+                      if (pathname === '/') {
+                        e.preventDefault();
+                        handleNavLinkClick('#home');
+                      } else {
+                        setIsMobileMenuOpen(false);
+                      }
+                    }} 
+                    className="flex items-center space-x-2" 
+                    data-interactive
+                  >
                     <Code2 className="h-5 w-5 text-primary" />
                     <span className="font-semibold text-foreground">Nicola's Portfolio</span>
-                  </a>
+                  </Link>
                 </SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col space-y-4">
                 {mainNavItems.map((item) => (
-                  <a
+                  <Link
                     key={item.label}
-                    href={item.href}
+                    href={getDynamicHref(item.href)}
                     onClick={(e) => {
-                      e.preventDefault(); 
-                      handleNavLinkClick(item.href);
+                      if (pathname === '/') {
+                        e.preventDefault(); 
+                        handleNavLinkClick(item.href);
+                      } else {
+                        setIsMobileMenuOpen(false);
+                      }
                     }}
                     className={cn(
                       "text-base font-medium transition-colors hover:text-primary py-2",
@@ -183,10 +238,22 @@ export default function Navbar() {
                     data-interactive
                   >
                     {item.label}
-                  </a>
+                  </Link>
                 ))}
                 <Button asChild className="w-full mt-4 py-3 text-base" data-interactive>
-                  <a href="#contact" onClick={(e) => { e.preventDefault(); handleNavLinkClick('#contact'); }}>Contattami</a>
+                  <Link 
+                    href={getDynamicHref('#contact')}
+                    onClick={(e) => {
+                      if (pathname === '/') {
+                        e.preventDefault();
+                        handleNavLinkClick('#contact');
+                      } else {
+                        setIsMobileMenuOpen(false);
+                      }
+                    }}
+                  >
+                    Contattami
+                  </Link>
                 </Button>
               </nav>
             </SheetContent>
@@ -196,3 +263,4 @@ export default function Navbar() {
     </header>
   );
 }
+
