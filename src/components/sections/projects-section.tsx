@@ -16,12 +16,12 @@ const projects = [
     techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript"],
   },
   {
-    title: "Coming Soon...",
-    description: "Coming Soon...",
-    imageUrl: "/vuoto.png",
-    imageHint: "Coming Soon...",
+    title: "AetherAI",
+    description: "Semplice wrapper di un'AI Google",
+    imageUrl: "/aetherai-project.png",
+    imageHint: "aetherai",
     link: "#", // Placeholder link
-    techStack: ["Coming Soon..."],
+    techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript"],
   },
   {
     title: "Coming Soon...",
