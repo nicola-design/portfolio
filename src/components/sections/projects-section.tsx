@@ -20,7 +20,7 @@ const projects = [
     description: "Semplice wrapper di un'AI Google",
     imageUrl: "/aetherai-project.png",
     imageHint: "aetherai",
-    link: "#", // Placeholder link
+    link: "https://aether-ai-seven.vercel.app/", // Placeholder link
     techStack: ["Next.js", "React", "Tailwind CSS", "TypeScript"],
   },
   {
