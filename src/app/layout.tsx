@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Nicola's Portfolio",
     description: "Nicola's personal portfolio.",
-    images: ["/icon.png"], // ← cambia questo URL con il tuo
+    images: ["/me.png"], // ← cambia questo URL con il tuo
   },
 };
 
